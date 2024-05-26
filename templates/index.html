@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Todo List</title>
+</head>
+
+<body>
+  <h1>Todo List</h1>
+  <ul>
+    {{range .}}
+    <li>
+      <h2>{{.Name}}</h2>
+      <p>{{.Body}}</p>
+      <p>Created at: {{formatDate .CreatedAt}}</p>
+    </li>
+    {{end}}
+  </ul>
+</body>
+
+</html>
