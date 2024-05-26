@@ -75,6 +75,14 @@ func main() {
 	// サーバー起動
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
+		var todos []Todo
+		// テーブルからデータを取得
+		ctx := context.Background()
+		// SELECT * FROM todos
+		err := db.NewSelect().Model(&todos).Scan(ctx)
+		if err != nil {
+			return err
+		}
 		return c.String(http.StatusOK, "")
 	})
 	e.Logger.Fatal(e.Start(":1323"))
