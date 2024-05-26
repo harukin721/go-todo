@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -15,24 +16,30 @@ import (
 	"github.com/uptrace/bun/extra/bundebug"
 )
 
-// +-------+-----------------+------+-----+---------+----------------+
-// | Field | Type            | Null | Key | Default | Extra          |
-// +-------+-----------------+------+-----+---------+----------------+
-// | id    | bigint unsigned | NO   | PRI | NULL    | auto_increment |
-// | name  | text            | NO   |     | NULL    |                |
-// | body  | text            | NO   |     | NULL    |                |
-// | done  | tinyint(1)      | NO   |     | 0       |                |
-// +-------+-----------------+------+-----+---------+----------------+
-// 4 rows in set (0.01 sec)
+// +------------+-----------------+------+-----+-------------------+-------------------+
+// | Field      | Type            | Null | Key | Default           | Extra             |
+// +------------+-----------------+------+-----+-------------------+-------------------+
+// | id         | bigint unsigned | NO   | PRI | NULL              | auto_increment    |
+// | name       | text            | NO   |     | NULL              |                   |
+// | body       | text            | NO   |     | NULL              |                   |
+// | done       | tinyint(1)      | NO   |     | 0                 |                   |
+// | created_at | timestamp       | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+// | updated_at | timestamp       | YES  |     | NULL              |                   |
+// | deleted_at | timestamp       | YES  |     | NULL              |                   |
+// +------------+-----------------+------+-----+-------------------+-------------------+
+// 7 rows in set (0.00 sec)
 
 type Todo struct {
 	// bun は、Go の構造体を SQL クエリに変換するためのライブラリ
 	bun.BaseModel `bun:"table:todos,alias:t"`
 
-	ID   int    `bun:"type:serial,pk"`
-	Name string `bun:"type:text,notnull"`
-	Body string `bun:"type:text,notnull"`
-	Done bool   `bun:"type:boolean,notnull,default:false"`
+	ID        int       `bun:"type:serial,pk"`
+	Name      string    `bun:"type:text,notnull"`
+	Body      string    `bun:"type:text,notnull"`
+	Done      bool      `bun:"type:boolean,notnull,default:false"`
+	CreatedAt time.Time `bun:"type:timestamp,default:current_timestamp"`
+	UpdatedAt time.Time `bun:"type:timestamp,nullzero"`
+	DeletedAt time.Time `bun:"type:timestamp,soft_delete,nullzero"`
 }
 
 func main() {
