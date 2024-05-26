@@ -2,17 +2,22 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Todo struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Body      string `json:"body"`
-	Done      bool   `json:"done"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	// bun は、Go の構造体を SQL クエリに変換するためのライブラリ
+	bun.BaseModel `bun:"table:todos,alias:t"`
+
+	ID        int       `bun:"type:serial,pk,autoincr"`
+	Name      string    `bun:"type:text,notnull"`
+	Body      string    `bun:"type:text,notnull"`
+	Done      bool      `bun:"type:boolean,notnull,default:false"`
+	CreatedAt time.Time `bun:"type:timestamp,default:current_timestamp"`
+	UpdatedAt time.Time `bun:"type:timestamp,nullzero"`
+	DeletedAt time.Time `bun:"type:timestamp,soft_delete,nullzero"`
 }
 
 func main() {
